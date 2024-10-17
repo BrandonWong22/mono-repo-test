@@ -9,19 +9,19 @@ on:
 
 jobs:
   lint-main-ui:
-    if: contains(github.event.pull_request.changed_files, 'ui/main-ui')
+    if: contains(github.event.pull_request.head_commit.message, 'ui/main-ui')
     runs-on: ubuntu-latest
     steps:
       - run: echo "main"
 
   lint-goals:
-    if: contains(github.event.pull_request.changed_files, 'ui/goals')
+    if: contains(github.event.pull_request.head_commit.message, 'ui/goals')
     runs-on: ubuntu-latest
     steps:
       - run: echo "goals"
 
   lint-customer:
-    if: contains(github.event.pull_request.changed_files, 'ui/customer')
+    if: contains(github.event.pull_request.head_commit.message, 'ui/customer')
     runs-on: ubuntu-latest
     steps:
       - run: echo "customer"
