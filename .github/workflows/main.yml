@@ -1,27 +1,13 @@
-name: Lint and Test
+name: Workflow Test
 
 on:
-  pull_request:
-    paths:
-      - 'ui/main-ui/**'
-      - 'ui/goals/**'
-      - 'ui/customer/**'
+  workflow_dispatch:
 
 jobs:
   lint-main-ui:
-    if: contains(github.event.pull_request.head_commit.message, 'ui/main-ui')
     runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'release/')
     steps:
-      - run: echo "main"
-
-  lint-goals:
-    if: contains(github.event.pull_request.head_commit.message, 'ui/goals')
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "goals"
-
-  lint-customer:
-    if: contains(github.event.pull_request.head_commit.message, 'ui/customer')
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "customer"
+      - name:
+        run: |
+          echo "test"
