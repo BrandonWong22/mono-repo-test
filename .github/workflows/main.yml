@@ -6,8 +6,8 @@ on:
 jobs:
   lint-main-ui:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'release/')
+    if: startsWith(github.ref, 'release/')
     steps:
-      - name:
+      - name: test
         run: |
           echo "test"
