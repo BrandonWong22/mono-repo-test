@@ -25,6 +25,4 @@ jobs:
             });
 
             // Log each comment to the output
-            comments.forEach(comment => {
-              console.log(`Comment by ${comment.user.login}: ${comment.body}`);
-            });
+            console.log(comments)
