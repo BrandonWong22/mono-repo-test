@@ -1,21 +1,30 @@
-name: Workflow Test
+name: List PR Comments
 
 on:
   pull_request:
-    branches: main
+    types: [opened, synchronize]
 
 jobs:
-  pr-test:
+  list-comments:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # Checkout the code (not strictly necessary for this task, but often included in workflows)
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: comment
+      # Use GitHub Script to list all comments on the PR
+      - name: List all comments on the PR
+        uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // Get the existing comments.
-            const {data: comments} = await github.rest.issues.listComments({
+            const { data: comments } = await github.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.payload.number,
-            })
+              issue_number: context.payload.pull_request.number,
+            });
+
+            // Log each comment to the output
+            comments.forEach(comment => {
+              console.log(`Comment by ${comment.user.login}: ${comment.body}`);
+            });
