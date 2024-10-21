@@ -26,20 +26,4 @@ jobs:
 
             // Log each comment to the output
             const botComment = comments.find(comment => comment.user.login === 2427868662)                                                                       
-            const commentBody = "Hello from actions/github-script! (${{ github.sha }})"                  
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: commentBody
-              })
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.number,
-                body: commentBody
-              })
-            }
-            
+            console.log(botComment)
