@@ -27,5 +27,5 @@ jobs:
             console.log(comments)
 
             // Log each comment to the output
-            const botComment = comments.find(comment => comment.user.login === 2427868662)                                                                       
+            const botComment = comments.find(comment => comment.user.login === 'BrandonWong22')                                                                       
             console.log(botComment)
