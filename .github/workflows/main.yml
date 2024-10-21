@@ -27,5 +27,22 @@ jobs:
             console.log(comments)
 
             // Log each comment to the output
-            const botComment = comments.find(comment => comment.user.login === 'BrandonWong22')                                                                       
+            const botComment = comments.find(comment => comment.user.login === 'BrandonWong22')  
+            const commentBody = "Hello from actions/github-script! (${{ github.sha }})"      
             console.log(botComment)
+
+            if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: commentBody
+                })
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.number,
+                  body: commentBody
+                })
+              }
