@@ -30,7 +30,7 @@ jobs:
             console.log(comments)
 
             // Log each comment to the output
-            const botComment = comments.find(comment => comment.body.includes('test))  
+            const botComment = comments.find(comment => comment.body.includes('test'))  
             const commentBody = "Hello from actions/github-script! (${{ github.sha }})"      
             console.log(botComment)
 
