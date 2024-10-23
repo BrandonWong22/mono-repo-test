@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+  pull-requests: write
+
 jobs:
   list-comments:
     runs-on: ubuntu-latest
@@ -18,11 +21,31 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { data: comments } = await github.issues.listComments({
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.pull_request.number,
             });
 
-            // Log each comment to the output
             console.log(comments)
+
+            // Log each comment to the output
+            const botComment = comments.find(comment => comment.body.includes('Hello from actions'))  
+            const commentBody = "Hello from actions/github-script! (${{ github.sha }})"      
+            console.log(botComment)
+
+             if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: commentBody
+                })
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.number,
+                  body: commentBody
+                })
+              }
