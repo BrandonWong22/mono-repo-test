@@ -1,28 +1,50 @@
-name: List PR Comments
+name: UI Tests
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    paths:
+      - 'ui/main-ui/**'
+      - 'ui/goals/**'
 
 jobs:
-  list-comments:
+  detect-changes:
     runs-on: ubuntu-latest
+    outputs:
+      main_ui_changed: ${{ steps.check_changes.outputs.main_ui }}
+      goals_changed: ${{ steps.check_changes.outputs.goals }}
     steps:
-      # Checkout the code (not strictly necessary for this task, but often included in workflows)
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Use GitHub Script to list all comments on the PR
-      - name: List all comments on the PR
+      - name: Check for changed files
+        id: check_changes
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { data: comments } = await github.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-            });
+            const mainUiChanges = await github.paginate(
+              github.rest.pulls.listFiles, 
+              { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number }
+            ).then(files => files.some(f => f.filename.startsWith('ui/main-ui/')));
 
-            // Log each comment to the output
-            console.log(comments)
+            const goalsChanges = await github.paginate(
+              github.rest.pulls.listFiles, 
+              { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number }
+            ).then(files => files.some(f => f.filename.startsWith('ui/goals/')));
+
+            core.setOutput('main_ui', mainUiChanges ? 'true' : 'false');
+            core.setOutput('goals', goalsChanges ? 'true' : 'false');
+
+  main-ui-tests:
+    if: ${{ needs.detect-changes.outputs.main_ui_changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests for main-ui
+        run: |
+          echo "Running tests for main-ui"
+          # Add your main-ui test commands here
+
+  goals-tests:
+    if: ${{ needs.detect-changes.outputs.goals_changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests for goals
+        run: |
+          echo "Running tests for goals"
+          # Add your goals test commands here
