@@ -23,6 +23,8 @@ jobs:
               { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number }
             ).then(files => files.some(f => f.filename.startsWith('ui/main-ui/')));
 
+            console.log(mainUiChanges)
+
             const goalsChanges = await github.paginate(
               github.rest.pulls.listFiles, 
               { owner: context.repo.owner, repo: context.repo.repo, pull_number: context.payload.pull_request.number }
